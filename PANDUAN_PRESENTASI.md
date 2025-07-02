@@ -243,4 +243,15 @@ A: Frontend dashboard, real-time analytics, dan machine learning integration.
 - **LinkedIn**: [linkedin.com/in/vikaputriariyanti](https://www.linkedin.com/in/vikaputriariyanti/)
 - **GitHub**: [github.com/Vputri](https://github.com/Vputri)
 
-**Selamat presentasi! 🚀** 
+**Selamat presentasi! 🚀**
+
+## Penjelasan Fitur Filter API
+
+Semua endpoint utama API mendukung filter data berdasarkan kategori, subkategori, negara, kota, provinsi, dan region. Filter ini digunakan dengan menambahkan query parameter pada URL endpoint.
+
+### Contoh:
+- `/api/most-sold-products/?category=Technology&country=Indonesia`
+- `/api/discount-quantity-correlation/?subcategory=Chairs&state=Jawa%20Barat`
+- `/api/quantity-by-country/?region=Asia&city=Jakarta`
+
+Jelaskan bahwa fitur ini memudahkan analisis data secara spesifik sesuai kebutuhan bisnis atau presentasi. 

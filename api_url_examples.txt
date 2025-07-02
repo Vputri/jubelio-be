@@ -1,0 +1,54 @@
+# API URL Examples (supermarket/views.py)
+
+# 1. Most Sold Products
+Tanpa filter:
+/api/most-sold-products/
+
+Dengan filter (bisa digabungkan):
+/api/most-sold-products/?category=Technology
+/api/most-sold-products/?subcategory=Phones
+/api/most-sold-products/?country=United States
+/api/most-sold-products/?city=New York
+/api/most-sold-products/?state=California
+/api/most-sold-products/?region=West
+
+Contoh kombinasi:
+/api/most-sold-products/?category=Technology&subcategory=Phones&country=United States&city=New York&state=California&region=West
+
+# 2. Discount vs Quantity Sold Correlation
+Tanpa filter:
+/api/discount-quantity-correlation/
+
+Dengan filter (bisa digabungkan):
+/api/discount-quantity-correlation/?category=Furniture
+/api/discount-quantity-correlation/?subcategory=Chairs
+/api/discount-quantity-correlation/?country=Canada
+/api/discount-quantity-correlation/?city=Toronto
+/api/discount-quantity-correlation/?state=Ontario
+/api/discount-quantity-correlation/?region=East
+
+Contoh kombinasi:
+/api/discount-quantity-correlation/?category=Furniture&state=Ontario&region=East
+
+# 3. Quantity by Country
+Tanpa filter:
+/api/quantity-by-country/
+
+Dengan filter (bisa digabungkan):
+/api/quantity-by-country/?category=Office Supplies
+/api/quantity-by-country/?subcategory=Binders
+/api/quantity-by-country/?country=Mexico
+/api/quantity-by-country/?city=Monterrey
+/api/quantity-by-country/?state=Nuevo Leon
+/api/quantity-by-country/?region=Central
+
+Contoh kombinasi:
+/api/quantity-by-country/?category=Office Supplies&city=Monterrey&region=Central
+
+# 4. Filter Options (tidak ada filter)
+/api/filter-options/
+
+# Catatan:
+- Semua filter bisa dikombinasikan sesuai kebutuhan.
+- Jika tanpa filter, cukup akses endpoint dasarnya saja.
+- Nilai filter (category, subcategory, dst) harus sesuai data yang tersedia di database. 

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.db.models import Sum, Count, Avg
+from django.db.models import Sum, Count, Avg, F
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
 import json
@@ -12,11 +12,35 @@ from rest_framework.decorators import api_view
 def most_sold_products(request):
     """
     API endpoint to get the most sold products to least sold products (for Pie Chart)
+    
+    Query Parameters (opsional):
+    - category: Nama kategori (contoh: Technology)
+    - subcategory: Nama subkategori (contoh: Chairs)
+    - country: Nama negara
+    - city: Nama kota
+    - state: Nama provinsi/wilayah
+    - region: Nama region
+    
     Returns data in format suitable for pie chart visualization
     """
     try:
-        # Get total quantity sold for each product
-        product_sales = Sales.objects.values(
+        # Ambil filter dari query params
+        filters = {}
+        if 'category' in request.GET:
+            filters['product__category__name'] = request.GET['category']
+        if 'subcategory' in request.GET:
+            filters['product__sub_category__name'] = request.GET['subcategory']
+        if 'country' in request.GET:
+            filters['country'] = request.GET['country']
+        if 'city' in request.GET:
+            filters['city'] = request.GET['city']
+        if 'state' in request.GET:
+            filters['state'] = request.GET['state']
+        if 'region' in request.GET:
+            filters['region'] = request.GET['region']
+
+        # Get total quantity sold for each product dengan filter
+        product_sales = Sales.objects.filter(**filters).values(
             'product__name'
         ).annotate(
             total_quantity=Sum('quantity')
@@ -66,11 +90,33 @@ def most_sold_products(request):
 def discount_quantity_correlation(request):
     """
     API endpoint to get correlation between discount (y) and quantity sales (x) based on state (facet)
+    
+    Query Parameters (opsional):
+    - category: Nama kategori (contoh: Technology)
+    - subcategory: Nama subkategori (contoh: Chairs)
+    - country: Nama negara
+    - city: Nama kota
+    - state: Nama provinsi/wilayah
+    - region: Nama region
+    
     Returns data suitable for scatter plot facet chart
     """
     try:
-        # Get discount vs quantity data grouped by state
-        correlation_data = Sales.objects.values(
+        # Ambil filter dari query params
+        filters = {}
+        if 'category' in request.GET:
+            filters['product__category__name'] = request.GET['category']
+        if 'subcategory' in request.GET:
+            filters['product__sub_category__name'] = request.GET['subcategory']
+        if 'country' in request.GET:
+            filters['country'] = request.GET['country']
+        if 'city' in request.GET:
+            filters['city'] = request.GET['city']
+        if 'region' in request.GET:
+            filters['region'] = request.GET['region']
+
+        # Get discount vs quantity data grouped by state dengan filter
+        correlation_data = Sales.objects.filter(**filters).values(
             'state'
         ).annotate(
             avg_discount=Avg('discount'),
@@ -87,10 +133,8 @@ def discount_quantity_correlation(request):
         }
         
         for item in correlation_data:
-            # Get individual points for this state
-            state_points = Sales.objects.filter(
-                state=item['state']
-            ).values('discount', 'quantity')
+            # Get individual points for this state dengan filter
+            state_points = Sales.objects.filter(state=item['state'], **filters).values('discount', 'quantity')
             
             points = []
             for point in state_points:
@@ -140,11 +184,33 @@ def discount_quantity_correlation(request):
 def quantity_by_country(request):
     """
     API endpoint to get quantity sold by country (heatmap chart)
+    
+    Query Parameters (opsional):
+    - category: Nama kategori (contoh: Technology)
+    - subcategory: Nama subkategori (contoh: Chairs)
+    - country: Nama negara
+    - city: Nama kota
+    - state: Nama provinsi/wilayah
+    - region: Nama region
+    
     Returns data suitable for heatmap visualization
     """
     try:
-        # Get quantity sold by country and category for heatmap
-        heatmap_data = Sales.objects.values(
+        # Ambil filter dari query params
+        filters = {}
+        if 'category' in request.GET:
+            filters['product__category__name'] = request.GET['category']
+        if 'subcategory' in request.GET:
+            filters['product__sub_category__name'] = request.GET['subcategory']
+        if 'state' in request.GET:
+            filters['state'] = request.GET['state']
+        if 'city' in request.GET:
+            filters['city'] = request.GET['city']
+        if 'region' in request.GET:
+            filters['region'] = request.GET['region']
+
+        # Get quantity sold by country and category for heatmap dengan filter
+        heatmap_data = Sales.objects.filter(**filters).values(
             'country',
             'product__category__name'
         ).annotate(
@@ -216,3 +282,34 @@ def quantity_by_country(request):
         response["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         
         return response
+
+
+@api_view(['GET'])
+def filter_options(request):
+    """
+    API endpoint untuk mendapatkan daftar nilai unik untuk filter:
+    - category
+    - subcategory
+    - country
+    - city
+    - state
+    - region
+    """
+    categories = list(Category.objects.order_by('name').values_list('name', flat=True))
+    subcategories = list(SubCategory.objects.order_by('name').values_list('name', flat=True))
+    countries = list(Sales.objects.order_by('country').values_list('country', flat=True).distinct())
+    cities = list(Sales.objects.order_by('city').values_list('city', flat=True).distinct())
+    states = list(Sales.objects.order_by('state').values_list('state', flat=True).distinct())
+    regions = list(Sales.objects.order_by('region').values_list('region', flat=True).distinct())
+    return JsonResponse({
+        'success': True,
+        'data': {
+            'categories': categories,
+            'subcategories': subcategories,
+            'countries': countries,
+            'cities': cities,
+            'states': states,
+            'regions': regions,
+        },
+        'message': 'Filter options retrieved successfully'
+    })

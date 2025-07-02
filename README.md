@@ -115,6 +115,46 @@ GET /api/quantity-by-country/
 ```
 **Response**: Data penjualan per negara dan kategori
 
+### Endpoint: /api/filter-options/
+Digunakan untuk mendapatkan daftar nilai unik (list) yang dapat digunakan untuk filter (category, subcategory, country, city, state, region). Cocok untuk mengisi dropdown filter di frontend atau referensi filter di API.
+
+Contoh response:
+```
+{
+  "success": true,
+  "data": {
+    "categories": ["Technology", "Furniture", ...],
+    "subcategories": ["Chairs", "Phones", ...],
+    "countries": ["Indonesia", ...],
+    "cities": ["Jakarta", ...],
+    "states": ["Jawa Barat", ...],
+    "regions": ["Asia", ...]
+  },
+  "message": "Filter options retrieved successfully"
+}
+```
+
+## 🔎 API Filtering
+
+Semua endpoint utama mendukung filter data menggunakan query parameter berikut:
+- `category` (nama kategori, contoh: Technology)
+- `subcategory` (nama subkategori, contoh: Chairs)
+- `country` (nama negara)
+- `city` (nama kota)
+- `state` (nama provinsi/wilayah)
+- `region` (nama region)
+
+### Contoh Penggunaan
+
+- Most Sold Products:
+  - `/api/most-sold-products/?category=Technology&country=Indonesia`
+- Discount-Quantity Correlation:
+  - `/api/discount-quantity-correlation/?subcategory=Chairs&state=Jawa%20Barat`
+- Quantity by Country:
+  - `/api/quantity-by-country/?region=Asia&city=Jakarta`
+
+Filter dapat dikombinasikan sesuai kebutuhan. Jika parameter tidak diberikan, data tidak difilter pada field tersebut.
+
 ## 📚 API Documentation
 
 - **Swagger UI**: http://localhost:8000/swagger/

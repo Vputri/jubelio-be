@@ -21,7 +21,7 @@ import-excel:
 
 test:
 	python manage.py test
-	python test_api.py
+	python test_api.py | tee api_test_output.txt
 
 convert-html:
 	python markdown_to_html.py SLIDE_PRESENTASI.md slide_presentasi.html 

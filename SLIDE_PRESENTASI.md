@@ -456,3 +456,16 @@ GET /api/quantity-by-country/
 - Django community
 - PostgreSQL team
 - Open source contributors
+
+---
+
+## 🔎 Fitur Filter API
+
+- Semua endpoint utama dapat difilter dengan query parameter:
+  - `category`, `subcategory`, `country`, `city`, `state`, `region`
+- Contoh:
+  - `/api/most-sold-products/?category=Technology&country=Indonesia`
+  - `/api/discount-quantity-correlation/?subcategory=Chairs&state=Jawa%20Barat`
+  - `/api/quantity-by-country/?region=Asia&city=Jakarta`
+
+Filter dapat dikombinasikan sesuai kebutuhan analisis.
