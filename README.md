@@ -1,279 +1,296 @@
-# Supermarket Data Analysis System
+# 🛒 Sistem Analisis Data Supermarket - Django & PostgreSQL
 
-This Django application transforms Excel supermarket data into PostgreSQL tables and provides REST API endpoints for data visualization.
+Proyek backend untuk analisis data supermarket menggunakan Django dan PostgreSQL. Sistem ini mengolah data Excel Kaggle dan menyediakan API untuk visualisasi data.
 
-## Features
+## 📊 Dataset
 
-- **Data Import**: Transforms Excel dataset to PostgreSQL tables
-- **Database Models**: Category, SubCategory, Product, Sales, and InventoryMovement
-- **REST APIs**: Three endpoints for data visualization
-- **Admin Interface**: Django admin for data management
-- **CORS Support**: Cross-Origin Resource Sharing enabled for frontend integration
-- **API Documentation**: Swagger/OpenAPI documentation
+- **Sumber**: Kaggle Supermarket Dataset
+- **Ukuran**: 9,994 records dengan 21 kolom
+- **Format**: Excel (.xlsx)
+- **Kategori**: 3 kategori utama (Technology, Furniture, Office Supplies)
 
-## Database Schema
+## 🏗️ Arsitektur Sistem
 
-### Models Created
-
-1. **Category**: Product categories (e.g., Office Supplies, Furniture, Technology)
-2. **SubCategory**: Sub-categories within each category
-3. **Product**: Individual products with manufacturer information
-4. **Sales**: Sales transactions with customer, location, and financial data
-5. **InventoryMovement**: Tracks inventory movements (IN/OUT) for each product
-
-## API Endpoints
-
-### 1. Most Sold Products (Pie Chart)
-- **Endpoint**: `GET /supermarket/api/most-sold-products/`
-- **Purpose**: Returns data for pie chart showing most to least sold products
-- **Response Format**:
-```json
-{
-  "success": true,
-  "data": {
-    "labels": ["Product1", "Product2", ...],
-    "data": [100, 95, ...],
-    "total_sales": 5000
-  }
-}
+```
+Excel Dataset → Django App → PostgreSQL → REST API → Frontend Visualization
 ```
 
-### 2. Discount vs Quantity Correlation (Scatter Plot Facet)
-- **Endpoint**: `GET /supermarket/api/discount-quantity-correlation/`
-- **Purpose**: Returns correlation data between discount (y) and quantity (x) by state
-- **Response Format**:
-```json
-{
-  "success": true,
-  "data": {
-    "states": ["CA", "NY", ...],
-    "correlations": [
-      {
-        "state": "CA",
-        "avg_discount": 0.15,
-        "avg_quantity": 3.2,
-        "total_records": 150,
-        "points": [{"x": 2, "y": 0.1}, ...]
-      }
-    ]
-  }
-}
+## 🛠️ Teknologi Stack
+
+### Backend
+- **Django 5.2.3** - Web framework
+- **Django REST Framework** - API development
+- **PostgreSQL** - Database
+- **Pandas** - Data processing
+- **OpenPyXL** - Excel file handling
+
+### Development Tools
+- **Docker** - Containerization
+- **Swagger/OpenAPI** - API documentation
+- **django-cors-headers** - CORS support
+
+## 📁 Struktur Proyek
+
+```
+jubelio/
+├── jubelio/                 # Django project settings
+├── supermarket/            # Main app
+│   ├── models.py          # Database models
+│   ├── views.py           # API views
+│   ├── urls.py            # URL routing
+│   └── admin.py           # Admin interface
+├── management/            # Custom commands
+│   └── commands/
+│       └── import_data.py # Data import command
+├── requirements.txt       # Dependencies
+├── docker-compose.yml     # Docker configuration
+├── manage.py             # Django management
+└── README.md             # Documentation
 ```
 
-### 3. Quantity by Country (Heatmap)
-- **Endpoint**: `GET /supermarket/api/quantity-by-country/`
-- **Purpose**: Returns quantity sold by country and category for heatmap visualization
-- **Response Format**:
-```json
-{
-  "success": true,
-  "data": {
-    "countries": ["United States", "Canada", ...],
-    "categories": ["Office Supplies", "Furniture", ...],
-    "data": [
-      {
-        "country": "United States",
-        "category": "Office Supplies",
-        "quantity": 1500
-      }
-    ],
-    "matrix": {...}
-  }
-}
-```
+## 🚀 Quick Start
 
-## Setup Instructions
+### 1. Setup Environment
 
-### Prerequisites
-- Python 3.8+
-- Docker and Docker Compose
-- PostgreSQL (via Docker)
-
-### Installation
-
-1. **Clone and setup the project**:
 ```bash
-# Activate virtual environment
-source env/bin/activate
+# Clone repository
+git clone <repository-url>
+cd jubelio
+
+# Create virtual environment
+python -m venv env
+source env/bin/activate  # On Windows: env\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-2. **Start PostgreSQL database**:
-```bash
-docker-compose up -d
-```
+### 2. Database Setup
 
-3. **Run database migrations**:
 ```bash
+# Start PostgreSQL with Docker
+docker-compose up -d
+
+# Run migrations
 python manage.py makemigrations
 python manage.py migrate
-```
 
-4. **Import Excel data**:
-```bash
-python manage.py import_excel_data kaggle_supermarket_dataset.xlsx
-```
-
-5. **Create superuser (optional)**:
-```bash
+# Create superuser (optional)
 python manage.py createsuperuser
 ```
 
-6. **Start Django development server**:
+### 3. Import Data
+
 ```bash
+# Import Excel data to PostgreSQL
+python manage.py import_data
+```
+
+### 4. Run Server
+
+```bash
+# Start development server
 python manage.py runserver
+
+# Server will be available at http://localhost:8000
 ```
 
-## Usage
+## 📊 API Endpoints
 
-### Access Admin Interface
-- URL: http://localhost:8000/admin/
-- Username: admin
-- Password: (set during superuser creation)
-
-### Test API Endpoints
-```bash
-# Test all endpoints
-python test_api.py
-
-# Or test individually with curl
-curl http://localhost:8000/supermarket/api/most-sold-products/
-curl http://localhost:8000/supermarket/api/discount-quantity-correlation/
-curl http://localhost:8000/supermarket/api/quantity-by-country/
+### 1. Most Sold Products (Pie Chart)
 ```
+GET /api/most-sold-products/
+```
+**Response**: Data untuk pie chart produk terlaris
 
-### API Documentation
+### 2. Discount vs Quantity Correlation (Scatter Plot)
+```
+GET /api/discount-correlation/
+```
+**Response**: Data korelasi diskon vs kuantitas per negara bagian
+
+### 3. Quantity Sold by Country (Heatmap)
+```
+GET /api/quantity-by-country/
+```
+**Response**: Data penjualan per negara dan kategori
+
+## 📚 API Documentation
+
 - **Swagger UI**: http://localhost:8000/swagger/
-- **Redoc**: http://localhost:8000/redoc/
+- **ReDoc**: http://localhost:8000/redoc/
 
-## CORS Testing
+## 🧪 Testing
 
-### What is CORS?
-Cross-Origin Resource Sharing (CORS) allows web applications to make requests to APIs hosted on different domains. This is essential for frontend applications that need to communicate with your Django backend.
-
-### Testing CORS Functionality
-
-1. **Start your Django server**:
+### API Testing
 ```bash
-python manage.py runserver
+# Run test script
+python test_api.py
 ```
 
-2. **Open the CORS test file**:
-   - Open `test_cors.html` in your web browser
-   - Or serve it with a simple HTTP server:
-   ```bash
-   python -m http.server 8080
-   # Then visit http://localhost:8080/test_cors.html
-   ```
+### CORS Testing
+1. Buka `test_cors.html` di browser
+2. Klik tombol "Test API"
+3. Periksa response di console
 
-3. **Test the APIs**:
-   - Click the "Test API" buttons for each endpoint
-   - Verify that requests succeed without CORS errors
-   - Check the response data in the browser
+## 📈 Data Models
 
-### Expected Results
-- ✅ **Success**: Green boxes with API response data
-- ❌ **CORS Error**: Red boxes with error messages
-- ❌ **Network Error**: Red boxes indicating server connection issues
+### Category
+- `name` - Nama kategori (Technology, Furniture, Office Supplies)
 
-### CORS Configuration
-The application is configured with:
-- `CORS_ALLOW_ALL_ORIGINS = True` (development only)
-- `CORS_ALLOW_CREDENTIALS = True`
-- Proper middleware placement for security
+### SubCategory
+- `name` - Nama sub-kategori
+- `category` - Foreign key ke Category
 
-### For Production
-Update `settings.py` to restrict allowed origins:
+### Product
+- `name` - Nama produk
+- `subcategory` - Foreign key ke SubCategory
+- `unit_price` - Harga per unit
+
+### Sales
+- `product` - Foreign key ke Product
+- `quantity` - Kuantitas terjual
+- `discount` - Diskon (0-1)
+- `profit` - Profit
+- `state` - Negara bagian
+- `region` - Region
+- `date` - Tanggal penjualan
+
+### InventoryMovement
+- `product` - Foreign key ke Product
+- `movement_type` - Jenis pergerakan (IN/OUT)
+- `quantity` - Kuantitas
+- `date` - Tanggal pergerakan
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/supermarket
+
+# Django
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+
+### CORS Settings
 ```python
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React development
-    "https://yourdomain.com",  # Production domain
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 ```
 
-### Data Import Worker
-The system includes a Django management command that:
-- Reads the Excel file using pandas
-- Cleans and transforms data (currency, discounts, dates)
-- Creates database records with proper relationships
-- Generates inventory movements for sales transactions
+## 📊 Data Insights
+
+### Top Categories
+1. **Technology** - 37% dari total penjualan
+2. **Furniture** - 33% dari total penjualan  
+3. **Office Supplies** - 30% dari total penjualan
+
+### Key Metrics
+- **Total Products**: 1,850 produk unik
+- **Total Sales**: 5,009 transaksi
+- **Date Range**: 2014-2017
+- **Geographic Coverage**: 49 negara bagian
+
+## 🎯 Business Value
+
+### Analytics Capabilities
+- **Product Performance Analysis** - Identifikasi produk terlaris
+- **Pricing Optimization** - Analisis korelasi diskon
+- **Geographic Insights** - Penjualan per wilayah
+- **Trend Analysis** - Pola penjualan temporal
+
+### Strategic Benefits
+- **Data-Driven Decisions** - Berbasis data untuk strategi bisnis
+- **Market Expansion** - Identifikasi pasar potensial
+- **Inventory Management** - Optimasi stok berdasarkan penjualan
+- **Pricing Strategy** - Penetapan harga optimal
+
+## 🚀 Deployment
+
+### Docker Deployment
+```bash
+# Build and run with Docker
+docker-compose up --build
+```
+
+### Production Setup
+1. Set `DEBUG=False`
+2. Configure production database
+3. Set up static files serving
+4. Configure HTTPS
+5. Set up monitoring
+
+## 📝 Development
+
+### Adding New Endpoints
+1. Create view in `views.py`
+2. Add URL pattern in `urls.py`
+3. Update API documentation
+4. Add tests
+
+### Data Import Process
+1. Place Excel file in project root
+2. Run `python manage.py import_data`
+3. Verify data in admin interface
+
+## 🤝 Contributing
+
+1. Fork repository
+2. Create feature branch
+3. Make changes
+4. Add tests
+5. Submit pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 📞 Contact
+
+- **Name**: Vika Putri Ariyanti
+- **Email**: vikaputriariyanti@gmail.com
+- **LinkedIn**: [linkedin.com/in/vikaputriariyanti](https://www.linkedin.com/in/vikaputriariyanti/)
+- **GitHub**: [github.com/Vputri](https://github.com/Vputri)
+
+---
+
+## 📋 Checklist Setup
+
+- [ ] Virtual environment created
+- [ ] Dependencies installed
+- [ ] PostgreSQL running
+- [ ] Database migrations applied
+- [ ] Data imported successfully
+- [ ] Server running on localhost:8000
+- [ ] API endpoints accessible
+- [ ] Swagger documentation working
+- [ ] CORS testing successful
+
+## 🎯 Next Steps
+
+1. **Frontend Development** - Dashboard visualization
+2. **Advanced Analytics** - Machine learning integration
+3. **Real-time Updates** - WebSocket implementation
+4. **Mobile App** - React Native integration
+5. **Cloud Deployment** - AWS/Azure setup
+
+---
+
+**Happy Coding! 🚀**
+
+## 📋 Konversi Slide ke HTML
+
+Untuk mengubah slide presentasi ke format HTML:
 
 ```bash
-# Re-import data (clears existing data first)
-python manage.py import_excel_data kaggle_supermarket_dataset.xlsx
+python markdown_to_html.py SLIDE_PRESENTASI.md slide_presentasi.html
 ```
 
-## Data Processing Features
-
-### Data Cleaning
-- **Currency Values**: Removes $ symbols and converts to Decimal
-- **Discounts**: Converts percentages to decimal format (0-1 range)
-- **Dates**: Converts to proper date format
-- **Duplicates**: Handles duplicate orders with get_or_create
-
-### Performance Optimizations
-- Uses Django ORM with select_related for efficient queries
-- Implements database transactions for data integrity
-- Optimized queries with proper annotations and aggregations
-
-## File Structure
-```
-jubelio/
-├── supermarket/
-│   ├── models.py              # Database models
-│   ├── views.py               # API endpoints
-│   ├── admin.py               # Admin interface
-│   ├── urls.py                # URL routing
-│   └── management/
-│       └── commands/
-│           └── import_excel_data.py  # Data import worker
-├── jubelio/
-│   ├── settings.py            # Django settings
-│   └── urls.py                # Main URL configuration
-├── bin/
-│   └── preview_excel.py       # Excel data preview script
-├── docker-compose.yml         # PostgreSQL container
-├── kaggle_supermarket_dataset.xlsx  # Source data
-├── test_api.py               # API testing script
-├── test_cors.html            # CORS testing interface
-└── README.md                 # This file
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Error**:
-   - Ensure PostgreSQL container is running: `docker-compose ps`
-   - Check database credentials in settings.py
-
-2. **Import Errors**:
-   - Verify Excel file path and format
-   - Check file permissions
-   - Ensure all required packages are installed
-
-3. **API Errors**:
-   - Check Django server is running
-   - Verify URL patterns in urls.py
-   - Check database has data imported
-
-4. **CORS Errors**:
-   - Ensure `django-cors-headers` is installed
-   - Check middleware order in settings.py
-   - Verify CORS settings are properly configured
-   - Test with the provided `test_cors.html` file
-
-### Logs
-- Django logs: Check console output when running server
-- Database logs: `docker-compose logs db`
-
-## Contributing
-
-1. Follow Django conventions and best practices
-2. Use Django ORM instead of raw SQL
-3. Implement proper error handling in API endpoints
-4. Add tests for new features
-5. Update documentation for API changes
-6. Test CORS functionality when adding new endpoints 
+File HTML dapat dibuka di browser untuk presentasi. 
